@@ -1,0 +1,16 @@
+{
+    "name": "lenovo/create-test-mvc-project",
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "matinTayebiNia",
+            "email": "81463679+matinTayebiNia@users.noreply.github.com"
+        }
+    ],
+
+    "require": {}
+}
