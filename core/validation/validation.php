@@ -3,6 +3,7 @@
 namespace app\core\validation;
 
 use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
 
 class validation implements validationInterface
 {
@@ -15,29 +16,22 @@ class validation implements validationInterface
 
 
     private array $rules;
-    private array $messages;
-    private array $errors;
+    private array $messages = [];
+    private array $errors = [];
 
-    public function __construct(array $data)
+    public function __construct()
     {
-        $this->loadData($data);
+
     }
 
     public function setMessages(array $messages = [])
     {
-        if (!empty($messages)) {
-            //todo implement replace custom error message
-            var_dump($this->rules);
-            /*if (in_array($this->rules)){
-
-            }*/
-            $this->loadMessageData($messages);
-
-            $this->messages = $messages;
-        }
+        $keys = array_keys($this->rules);
+        $this->messages = $this->setStaticMessageForRule($keys);
+        $this->setCustomMessagesForRule($messages);
     }
 
-    protected function loadData(array $data)
+    public function loadData(array $data)
     {
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
@@ -58,41 +52,69 @@ class validation implements validationInterface
                 if (!is_string($item)) {
                     $ruleName = $item[0];
                 }
-                if ($ruleName == self::REQUIRED_VALIDATION && !$value) {
+                $this->required($ruleName, $value, $attribute);
 
+                $this->email($ruleName, $value, $attribute);
+
+                if ($ruleName === self::MIN_VALIDATION && strlen($value) < $item["min"]) {
+                    $this->addErrorForRule($attribute, self::MIN_VALIDATION, ["min" => $item["min"], "field" => $attribute]);
                 }
+
+                if ($ruleName === self::MAX_VALIDATION && strlen($value) > $item["max"]) {
+                    $this->addErrorForRule($attribute, self::MAX_VALIDATION, ["max" => $item["max"], "field" => $attribute]);
+                }
+
 
             }
         }
 
-        return empty($this->errors);
+        return empty(array_filter($this->errors));
     }
 
     /**
-     * @param $messages
-     * @param array $keysMessageValidation
+     * @param $keys
      * @return array
      */
-    protected function replaceKeys($messages, array $keysMessageValidation): array
+    #[Pure]
+    protected function setStaticMessageForRule($keys): array
     {
-        foreach ($messages as $key => $message) {
-            $keys = explode(".", $key);
-            $validate = $this->rules[$keys[0]];
-
+        $att = [];
+        $msg = [];
+        foreach ($keys as $key) {
+            $validate = $this->rules[$key];
             foreach ($validate as $item) {
-                $keysMessageValidation[array_search("{attribute}.{$item}", $keysMessageValidation, true)] = $key;
-
+                if (!is_string($item)) {
+                    $item = $item[0];
+                }
+                $att[] = $key . "." . $item;
+                $msg[] = $this->StaticMessages()["{attribute}." . $item];
             }
         }
-        return array($key, $keysMessageValidation);
+        return array_combine($att, $msg);
+    }
+
+
+    /**
+     * @param array $messages
+     * @return void
+     */
+    protected function setCustomMessagesForRule(array $messages): void
+    {
+        foreach ($messages as $key => $item)
+            if (in_array($key, array_keys($this->messages)))
+                $this->messages[$key] = $item;
     }
 
     private function addErrorForRule(string $attribute, string $rule, $params = [])
     {
-
+        $message = $this->messages[$attribute . "." . $rule] ?? '';
+        foreach ($params as $key => $value) {
+            $message = str_replace("{{$key}}", $value, $message);
+        }
+        $this->errors[$attribute][$rule] = $message;
     }
 
-    protected function messages(): array
+    protected function StaticMessages(): array
     {
         return [
             "{attribute}." . self::REQUIRED_VALIDATION => 'This {field} field is required',
@@ -103,28 +125,46 @@ class validation implements validationInterface
         ];
     }
 
-    protected function loadMessageData($messages)
+    public function hasError($attribute)
     {
-        $keysMessageValidation = array_keys($this->messages());
-        //todo implement replace static messages
-
-        $valuesMessageValidation = array_values($this->messages());
-        list($key, $keysMessageValidation) = $this->replaceKeys($messages, $keysMessageValidation);
-
-        /*echo "<pre>";
-        var_dump(array_combine($keysMessageValidation,$valuesMessageValidation));
-        echo "</pre>";*/
-        $this->messages = array_combine($keysMessageValidation, $valuesMessageValidation);
-
-        foreach ($this->messages as $key => $message) {
-            if (in_array($key, array_keys($messages))) {
-                $this->messages[$key] = $messages[$key];
-            }
-        }
-
-
-        echo "<pre>";
-        var_dump($this->messages);
-        echo "</pre>";
+        return $this->errors[$attribute] ?? false;
     }
+
+    public function gerError()
+    {
+        return $this->errors;
+    }
+
+    public function getFirstError($attribute)
+    {
+        return $this->errors[$attribute][array_key_first($this->errors[$attribute])] ?? false;
+    }
+
+    /**
+     * @param mixed $ruleName
+     * @param $value
+     * @param int|string $attribute
+     * @return void
+     */
+    private function required(mixed $ruleName, $value, int|string $attribute): void
+    {
+        if ($ruleName == self::REQUIRED_VALIDATION && !$value) {
+            $this->addErrorForRule($attribute, self::REQUIRED_VALIDATION, ["field" => $attribute]);
+        }
+    }
+
+    /**
+     * @param mixed $ruleName
+     * @param $value
+     * @param int|string $attribute
+     * @return void
+     */
+    private function email(mixed $ruleName, $value, int|string $attribute): void
+    {
+        if ($ruleName === self::EMAIL_VALIDATION && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            $this->addErrorForRule($attribute, self::EMAIL_VALIDATION);
+        }
+    }
+
+
 }

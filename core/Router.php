@@ -35,54 +35,25 @@ class Router
         try {
             $path = $this->request->getPath();
             $method = $this->request->getMethod();
-
+//var_dump($this->routes[$method][$path]);
             $callback = $this->routes[$method][$path] ?? false;
             if ($callback === false) {
                 $this->response->setStatusCode(404);
-                return $this->renderView("errors/_404");
+                return Application::$app->view->renderView("errors/_404");
             }
 
             if (is_string($callback)) {
-                return $this->renderView($callback);
+                return Application::$app->view->renderView($callback);
             }
             if (is_array($callback)) {
                 $callback[0] = new $callback[0]();
             }
-            return call_user_func($callback, $this->request);
+            return call_user_func($callback, $this->request,$this->response);
         } catch (\Exception $exception) {
             return $exception->getMessage() . "||line: " . $exception->getLine();
         }
 
     }
 
-    public function renderView($view, $params = [])
-    {
-        $layoutContent = $this->layoutContent();
-        $viewContent = $this->renderOnlyView($view, $params);
-        return str_replace("{{content}}", $viewContent, $layoutContent);
-    }
 
-    public function renderContent($content)
-    {
-        $layoutContent = $this->layoutContent();
-        return str_replace("{{content}}", $content, $layoutContent);
-    }
-
-    protected function layoutContent()
-    {
-        ob_start();
-        include_once Application::$rootDir . "/views/layouts/main.php";
-        return ob_get_clean();
-    }
-
-    protected function renderOnlyView($view, $params)
-    {
-        foreach ($params as $key => $value) {
-            $$key = $value;
-        }
-
-        ob_start();
-        include_once Application::$rootDir . "/views/$view.php";
-        return ob_get_clean();
-    }
 }

@@ -6,7 +6,7 @@ abstract class Controller
 {
     public function render($view, $params = [])
     {
-        return Application::$app->router->renderView($view, $params);
+        return Application::$app->view->renderView($view, $params);
     }
 
     public function getBody()
@@ -17,5 +17,10 @@ abstract class Controller
     public function toJson($value)
     {
         return json_encode($value);
+    }
+
+    public function redirect($root)
+    {
+         Application::$app->response->redirect($root);
     }
 }

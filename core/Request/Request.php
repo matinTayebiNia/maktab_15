@@ -2,6 +2,7 @@
 
 namespace app\core\Request;
 
+use app\core\Application;
 use app\core\validation\validation;
 use JetBrains\PhpStorm\Pure;
 
@@ -11,12 +12,7 @@ class Request implements RequestInterface
 
     public function getPath()
     {
-        $path = $_SERVER["REQUEST_URI"] ?? "/";
-        $position = strpos($path, "?");
-        if ($position === false) {
-            return $path;
-        }
-        return substr($path, 0, $position);
+        return parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
     }
 
     public function getMethod()
@@ -40,12 +36,13 @@ class Request implements RequestInterface
         return $body;
     }
 
-    public function validation($rule, $message = [])
+    public function validation($rule, $message = []): validation
     {
-        $validation = new validation($this->getBody());
+        $validation = Application::$app->validation;
+        $validation->loadData($this->getBody());
         $validation->setRule($rule);
         $validation->setMessages($message);
-        return $validation->SetupRule() ? $validation : false;
+        return $validation;
     }
 
     #[Pure]

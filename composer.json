@@ -3,7 +3,9 @@
     "autoload": {
         "psr-4": {
             "app\\": "./"
-        }
+        },"files": [
+            "Helpers/helper.php"
+        ]
     },
     "authors": [
         {

@@ -14,6 +14,9 @@ $app = new Application($rootPath);
 $app->router->get("/", [SiteController::class,"home"]);
 
 $app->router->get("/contact", [SiteController::class, "contact"]);
+/*$app->router->get("/contact", function (){
+    return "this is test";
+});*/
 $app->router->post("/contact", [SiteController::class, "contactPost"]);
 
 try {
