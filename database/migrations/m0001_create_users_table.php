@@ -14,7 +14,8 @@ class m0001_create_users_table
                     `name` VARCHAR(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
                     `lastname` VARCHAR(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
                     `National_Code` VARCHAR(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,               
-                    `typeUser` ENUM('Patient', 'Doctor', 'manager') NOT NULL DEFAULT 'Patient',
+                    `typeUser` ENUM('Patient', 'Doctor', 'manager') NOT NULL DEFAULT 'Patient',     
+                                        
                     `password` VARCHAR(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
                     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -2,8 +2,8 @@
 
 namespace App\core\Request;
 
-use app\App\core\Application;
-use app\App\core\validation\validation;
+use App\core\validation\validation;
+use App\core\Application;
 use JetBrains\PhpStorm\Pure;
 
 class Request implements RequestInterface
@@ -42,6 +42,11 @@ class Request implements RequestInterface
         $validation->loadData($this->getBody());
         $validation->setRule($rule);
         $validation->setMessages($message);
+        if (!$validation->SetupRule()) {
+            Application::$app->response->setStatusCode(400);
+            Application::$app->session->setFlash("errors", $validation);
+           return redirect(Application::$app->request->getPath());
+        }
         return $validation;
     }
 

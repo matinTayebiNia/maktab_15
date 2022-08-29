@@ -13,12 +13,18 @@ class Application
     public Response $response;
     public static string $rootDir;
     public static Application $app;
+    public static string $appName;
     public validation $validation;
     public View $view;
     public Database $database;
+    public Session $session;
+    public string $layout;
+    public ?Controller $controller = null;
 
     public function __construct($rootPath, array $config)
     {
+        self::$appName = $config["app_name"];
+        $this->layout = $config["application_main_layout"];
         self::$rootDir = $rootPath;
         self::$app = $this;
         $this->request = new Request();
@@ -27,6 +33,7 @@ class Application
         $this->view = new View();
         $this->validation = new validation();
         $this->database = Database::getInstance($config["db"]);
+        $this->session = new Session($config["session_lifeTime"]);
     }
 
     /**

@@ -36,10 +36,7 @@ class SiteController extends Controller
             "description.required" => "توضیحات الزامی میباشد",
         ]);
 
-        if (!$validation->SetupRule()) {
-            $response->setStatusCode(400);
-            return render($request->getPath());
-        }
+
 
         return $this->toJson($validation->subject);
 

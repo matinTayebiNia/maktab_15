@@ -4,6 +4,7 @@
     "build": "npx tailwindcss -i ./resources/css/input.css -o ./public/css/style.css --watch"
   },
   "devDependencies": {
-    "tailwindcss": "^3.1.8"
+    "tailwindcss": "^3.1.8",
+    "tailwindcss-dir": "^4.0.0"
   }
 }

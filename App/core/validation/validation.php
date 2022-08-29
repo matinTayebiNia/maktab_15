@@ -12,6 +12,7 @@ class validation implements validationInterface
     const MAX_VALIDATION = "max";
     const REGEX_VALIDATION = "regex";
     const EMAIL_VALIDATION = "email";
+    const INTEGER_VALIDATION = "integer";
 
 
     private array $rules;
@@ -42,6 +43,13 @@ class validation implements validationInterface
         $this->rules = $rules;
     }
 
+    public function getAttribute($key)
+    {
+        if (property_exists($this, $key)) {
+            return $this->{$key};
+        }
+    }
+
     public function SetupRule(): bool
     {
         foreach ($this->rules as $attribute => $rule) {
@@ -55,15 +63,13 @@ class validation implements validationInterface
 
                 $this->email($ruleName, $value, $attribute);
 
-                if ($ruleName === self::MIN_VALIDATION && strlen($value) < $item["min"]) {
-                    $this->addErrorForRule($attribute, self::MIN_VALIDATION, ["min" => $item["min"], "field" => $attribute]);
-                }
+                $this->integer($ruleName, $value, $attribute);
+
+                $this->min($ruleName, $value, $item, $attribute);
 
                 if ($ruleName === self::MAX_VALIDATION && strlen($value) > $item["max"]) {
                     $this->addErrorForRule($attribute, self::MAX_VALIDATION, ["max" => $item["max"], "field" => $attribute]);
                 }
-
-
             }
         }
 
@@ -110,7 +116,7 @@ class validation implements validationInterface
         foreach ($params as $key => $value) {
             $message = str_replace("{{$key}}", $value, $message);
         }
-        $this->errors[$attribute][$rule] = $message;
+        $this->errors[$attribute][] = $message;
     }
 
     protected function StaticMessages(): array
@@ -121,6 +127,7 @@ class validation implements validationInterface
             "{attribute}." . self::MIN_VALIDATION => 'Min length of this {field} must be {min}',
             "{attribute}." . self::MAX_VALIDATION => 'Max length of this {field} must be {max}',
             "{attribute}." . self::REGEX_VALIDATION => 'This {field} is not valid',
+            "{attribute}." . self::INTEGER_VALIDATION => 'This {field} is not valid',
         ];
     }
 
@@ -129,14 +136,14 @@ class validation implements validationInterface
         return $this->errors[$attribute] ?? false;
     }
 
-    public function gerError()
+    public function gerError(): array
     {
         return $this->errors;
     }
 
     public function getFirstError($attribute)
     {
-        return $this->errors[$attribute][array_key_first($this->errors[$attribute])] ?? false;
+        return $this->errors[$attribute][0] ?? false;
     }
 
     /**
@@ -165,5 +172,32 @@ class validation implements validationInterface
         }
     }
 
+    /**
+     * @param mixed $ruleName
+     * @param mixed $value
+     * @param int|string $attribute
+     * @return void
+     */
+    private function integer(mixed $ruleName, mixed $value, int|string $attribute): void
+    {
+        if ($ruleName === self::INTEGER_VALIDATION && !is_numeric($value)) {
+            $this->addErrorForRule($attribute, self::INTEGER_VALIDATION, ["field" => $attribute]);
+        }
+    }
+
+    /**
+     * @param mixed $ruleName
+     * @param $value
+     * @param $item
+     * @param int|string $attribute
+     * @return void
+     */
+    private function min(mixed $ruleName, $value, $item, int|string $attribute): void
+    {
+        if (!is_string($item))
+            if ($ruleName === self::MIN_VALIDATION && strlen($value) < $item["min"]) {
+                $this->addErrorForRule($attribute, self::MIN_VALIDATION, ["min" => $item["min"], "field" => $attribute]);
+            }
+    }
 
 }

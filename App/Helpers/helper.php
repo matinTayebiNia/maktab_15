@@ -1,7 +1,7 @@
 <?php
 
-use app\App\core\Application;
-use app\App\core\validation\validation;
+use App\core\Application;
+use App\core\validation\validation;
 use JetBrains\PhpStorm\NoReturn;
 use JetBrains\PhpStorm\Pure;
 
@@ -13,9 +13,11 @@ if (!function_exists("basePath")) {
 }
 
 if (!function_exists("errors")) {
-    function errors(): validation
+    function errors($value)
     {
-        return Application::$app->validation;
+        if (Application::$app->session->getFlash("errors") instanceof validation) {
+            return Application::$app->session->getFlash("errors")->getFirstError($value) ?? null;
+        }
     }
 }
 
@@ -23,18 +25,21 @@ if (!function_exists("old")) {
     #[Pure]
     function old($input, $defaultValue = null)
     {
-        return Application::$app->request->getBody() &&
-        Application::$app->request->getBody()[$input] ? Application::$app->request->getBody()[$input]
-            : $defaultValue;
+        return Application::$app->session->getFlash("errors") &&
+        Application::$app->session->getFlash("errors")->getAttribute($input) ?
+            Application::$app->session->getFlash("errors")->getAttribute($input) : $defaultValue;
     }
 }
 
 if (!function_exists("dd")) {
     #[NoReturn]
-    function dd($obj)
+    function dd($obj, ...$objs)
     {
         echo "<pre>";
-        var_dump($obj);
+        if (!empty($objs))
+            var_dump($obj, $objs);
+        else
+            var_dump($obj);
         echo "</pre>";
         exit();
     }
@@ -48,8 +53,15 @@ if (!function_exists("redirect")) {
 }
 
 if (!function_exists("render")) {
-    function render($view, $params = [])
+    function render($view, $params = []): string
     {
         return Application::$app->view->renderView($view, $params);
+    }
+}
+
+if (!function_exists("app_name")) {
+    function app_name()
+    {
+        return Application::$appName;
     }
 }
