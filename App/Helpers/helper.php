@@ -65,3 +65,27 @@ if (!function_exists("app_name")) {
         return Application::$appName;
     }
 }
+
+if (!function_exists("isActive")) {
+    #[Pure]
+    function isActive($key, $classname = "active_btn_admin")
+    {
+        if (is_array($key)) {
+            return in_array(Application::$app->request->getPath(), $key) ? $classname : '';
+        }
+        return Application::$app->request->getPath() == $key ? $classname : "";
+    }
+}
+if (!function_exists("getDirContent")) {
+    function getDirContent($dir): array
+    {
+        $files = scandir($dir);
+        $results = [];
+        foreach ($files as $value) {
+            if ($value != "." && $value != "..") {
+                $results[] = $value;
+            }
+        }
+        return $results;
+    }
+}

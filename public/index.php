@@ -26,6 +26,7 @@ $app->router->post("/contact", [SiteController::class, "contactPost"]);
 //panel
 //admin
 $app->router->get("/admin/index", [AdminController::class, "index"]);
+$app->router->get("/admin/doctors", [AdminController::class, "doctors"]);
 try {
     $app->run();
 } catch (Exception $e) {

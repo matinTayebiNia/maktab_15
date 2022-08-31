@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <title><?= $title ?? app_name() ?></title>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 font-body">
 <nav class="fixed border-b mx-auto max-w-full overflow-y-auto container  p-5 top-0 left-0 right-0  bg-white ">
     <div class="flex  items-center justify-around ">
         <div class="pt-2">
@@ -29,7 +29,8 @@
         </div>
         <!--        Button-->
         <a href="/login"
-           class="p-3 hidden md:block px-6 pt-2 text-white bg-blue-700 rounded baseline hover:bg-blue-600  ">
+           class="p-3 hidden md:block
+            px-6 text-lg text-white bg-blue-700 rounded baseline hover:bg-blue-600  ">
             ورود
         </a>
 

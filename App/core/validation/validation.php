@@ -73,7 +73,7 @@ class validation implements validationInterface
             }
         }
 
-        return empty(array_filter($this->errors));
+        return empty($this->errors);
     }
 
     /**
@@ -136,10 +136,7 @@ class validation implements validationInterface
         return $this->errors[$attribute] ?? false;
     }
 
-    public function gerError(): array
-    {
-        return $this->errors;
-    }
+
 
     public function getFirstError($attribute)
     {

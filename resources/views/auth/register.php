@@ -73,9 +73,8 @@
                                     <div class="mb-4">
                                         <input
                                                 type="number" name="National_Code"
-                                                class="form-control
-                                                 <?= errors("National_Code") ? " border-red-600" : "" ?>
-                                                 input-filed"
+                                                class="form-control input-filed
+                                                 <?= errors("National_Code") ? " border-red-600" : "" ?>"
                                                 value="<?= old("National_Code") ?>"
                                                 id="National_Code"
                                                 placeholder="کد ملی"
@@ -84,19 +83,6 @@
                                             <?= errors("National_Code") ?>
                                         </p>
 
-                                    </div>
-                                    <div class="mb-4">
-                                        <select name="typeUser" id="typeUser"
-                                                class="form-control
-                                                 <?= errors("typeUser") ? " border-red-600" : "" ?>
-                                                 input-filed">
-                                            <option value="Patient">بیمار</option>
-                                            <option value="Doctor">پزشک</option>
-                                            <option value="admin">مدیر</option>
-                                        </select>
-                                        <p class=" text-red-700 font-semibold">
-                                            <?= errors("typeUser") ?>
-                                        </p>
                                     </div>
                                     <div class="mb-4">
                                         <input

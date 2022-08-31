@@ -30,31 +30,31 @@ class Database
 
     public function applyMigrations()
     {
-        $this->createMigrationsTable();
-        $appliedMigrations = $this->getAppliedMigrations();
+        try {
 
-        $files = scandir(Application::$rootDir . "/database/migrations");
-        $toApplyMigrations = array_diff($files, $appliedMigrations);
-        $newMigration = [];
-        foreach ($toApplyMigrations as $migration) {
-            if ($migration === "." || $migration === "..") {
-                continue;
+            $this->createMigrationsTable();
+            $appliedMigrations = $this->getAppliedMigrations();
+
+            $files = getDirContent(Application::$rootDir . "/database/migrations");
+            $toApplyMigrations = array_diff($files, $appliedMigrations);
+
+            foreach ($toApplyMigrations as $migration) {
+                require_once Application::$rootDir . "/database/migrations/" . $migration;
+                $className = pathinfo($migration, PATHINFO_FILENAME);
+
+                $instance = new $className;
+                Log::setMessageWithTime("Applying migration $migration");
+                $instance->up();
+                $this->saveMigration($migration);
+                Log::setMessageWithTime("Applied migration $migration");
             }
-            require_once Application::$rootDir . "/database/migrations/" . $migration;
-            $className = pathinfo($migration, PATHINFO_FILENAME);
+            if (empty($toApplyMigrations))
+                Log::setSuccessMessage("nothing to migrate!");
 
-            $instance = new $className;
-            Log::setMessageWithTime("Applying migration $migration");
-            $instance->up();
-            Log::setMessageWithTime("Applied migration $migration");
-            $newMigration[] = $migration;
+        } catch (\Exception $exception) {
+          return  Log::setErrorMessage($exception->getMessage() . "| line:" . $exception->getLine());
         }
 
-        if (!empty($newMigration)) {
-            $this->saveMigrations($newMigration);
-        } else {
-            Log::setSuccessMessage("nothing to migrate!");
-        }
     }
 
     protected function createMigrationsTable()
@@ -74,27 +74,14 @@ class Database
         return $statement->fetchAll(\PDO::FETCH_COLUMN);
     }
 
-    protected function saveMigrations(array $migrations)
+    protected function saveMigration($migrations)
     {
-        $str = $this->convertMigrationsArrayToString($migrations);
-        $statement = $this->prepare("INSERT INTO migrations (migrations) VALUES $str");
+        $statement = $this->prepare("INSERT INTO migrations (migrations) VALUES ( '{$migrations}' )");
         $statement->execute();
-
     }
 
     public function prepare($sql): bool|\PDOStatement
     {
         return $this->pdo->prepare($sql);
     }
-
-    /**
-     * @param array $migrations
-     * @return string
-     */
-    private function convertMigrationsArrayToString(array $migrations): string
-    {
-        return implode(", ", array_map(fn($m) => "('$m')", $migrations));
-    }
-
-
 }

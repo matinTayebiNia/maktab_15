@@ -1,7 +1,22 @@
 @tailwind base;
 @tailwind components;
+@font-face {
+    font-family: "bakh";
+    font-style: normal;
+    font-weight: normal;
+    src: url("../fonts/bakh_Medium.woff");
+}
+
 @tailwind utilities;
 
+.font-body {
+    font-family:bakh, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.active_btn_admin {
+    @apply font-medium text-blue-500 transition-colors
+    bg-gradient-to-l from-white  to-blue-50 border-l-4 border-blue-500 duration-200;
+}
 
 body {
     margin: 0;
@@ -13,7 +28,7 @@ body {
     @apply block w-full
     px-3 py-1.5 text-base font-normal
     text-gray-700 bg-white bg-clip-padding
-    border border-solid border-gray-300 rounded
+    border border-solid rounded
     transition ease-in-out m-0 focus:text-gray-700
     focus:bg-white focus:border-blue-600 focus:outline-none;
 }

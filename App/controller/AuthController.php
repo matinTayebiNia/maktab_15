@@ -20,10 +20,10 @@ class AuthController extends Controller
             "password" => ["required"]
         ], [
             "National_Code.required" => "کد ملی الزامی میباشد",
-            "National_Code.integer" => "کد ملی معتبر میباشد",
+            "National_Code.integer" => "کد ملی معتبر نمیباشد",
             "password.required" => "رمز عبور الزامی میباشد",
         ]);
-
+        //users
         return redirect("admin/index");
     }
 
@@ -38,7 +38,6 @@ class AuthController extends Controller
             "name" => ["required"],
             "lastName" => ["required"],
             "National_Code" => ["required"],
-            "typeUser" => ["required"],
             "password" => ["required"],
         ], [
             "name.required" => "فیلد نام الزامی میباشد"
