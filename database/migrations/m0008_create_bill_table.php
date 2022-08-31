@@ -14,8 +14,9 @@ class m0008_create_bill_table
                     `doctor_charge` BIGINT NOT NULL,
                     `room_charge` BIGINT NOT NULL,
                     `lab_charge` BIGINT NOT NULL,
-                    `doctor_pay` BIGINT NOT NULL,
+                    `doctor_id` BIGINT NOT NULL,
                     FOREIGN KEY (`patient_id`) REFERENCES users(`id`),
+                    FOREIGN KEY (`doctor_id`) REFERENCES users(`id`),
                     PRIMARY KEY(`id`) 
                 );";
             $db->pdo->exec($SQL);
