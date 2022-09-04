@@ -85,6 +85,37 @@
 
                                     </div>
                                     <div class="mb-4">
+                                        <select name="type_user" class="form-control input-filed
+                                                 <?= errors("type_user") ? " border-red-600" : "" ?>" id="type_user">
+                                            <option <?= old("type_user") === "type_user" ? "selected" : "" ?>
+                                                    value="patient">بیمار
+                                            </option>
+                                            <option <?= old("type_user") === "manager" ? "selected" : "" ?>
+                                                    value="manager">ادمین
+                                            </option>
+                                            <option <?= old("type_user") === "doctor" ? "selected" : "" ?>
+                                                    value="doctor">پزشک
+                                            </option>
+                                        </select>
+                                        <p class=" text-red-700 font-semibold">
+                                            <?= errors("type_user") ?>
+                                        </p>
+
+                                    </div>
+                                    <div class="mb-4">
+                                        <textarea
+                                                name="address"
+                                                class="form-control input-filed
+                                                 <?= errors("address") ? " border-red-600" : "" ?>"
+                                                id="address"
+                                                placeholder="ادرس"
+                                        ><?= old("address") ?></textarea>
+                                        <p class=" text-red-700 font-semibold">
+                                            <?= errors("address") ?>
+                                        </p>
+
+                                    </div>
+                                    <div class="mb-4">
                                         <input
                                                 type="password" name="password"
                                                 class="form-control

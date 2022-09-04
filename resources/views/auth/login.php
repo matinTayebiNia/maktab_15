@@ -28,7 +28,7 @@
                                                  <?= errors("National_Code") ? " border-red-600" : "" ?>
                                                 input-filed"
                                                 id="National_Code"
-                                                value="<?=old("National_Code")?>"
+                                                value="<?= old("National_Code") ?>"
                                                 placeholder="کد ملی"
                                         />
                                         <p class=" text-red-700 font-semibold">
@@ -49,6 +49,7 @@
                                             <?= errors("password") ?>
                                         </p>
                                     </div>
+
                                     <div class="text-center pt-1 mb-12 pb-1">
                                         <button
                                                 class="inline-block px-6 py-2.5 text-white font-medium text-md leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"

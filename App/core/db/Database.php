@@ -4,20 +4,39 @@ namespace App\core\db;
 
 use App\core\Application;
 use App\core\Log\Log;
-use PDO;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 class Database
 {
-    public PDO $pdo;
     protected static Database $obj;
 
     private function __construct(array $config)
     {
-        $dsn = $config["dsn"];
-        $user = $config["user"];
-        $password = $config["password"];
-        $this->pdo = new \PDO($dsn, $user, $password);
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+        $capsule = new Capsule;
+
+        $capsule->addConnection([
+
+            "driver" => $config["driver"],
+
+            "host" => $config["host"],
+
+            "database" => $config["dbname"],
+
+            "username" => $config["user"],
+
+            "password" => $config["password"]
+
+        ]);
+
+        //Make this Capsule instance available globally.
+        $capsule->setAsGlobal();
+
+        // Set up the Eloquent ORM.
+        $capsule->bootEloquent();
+        $capsule->bootEloquent();
+
     }
 
     public static function getInstance(array $config): Database
@@ -52,36 +71,36 @@ class Database
                 Log::setSuccessMessage("nothing to migrate!");
 
         } catch (\Exception $exception) {
-          return  Log::setErrorMessage($exception->getMessage() . "| line:" . $exception->getLine());
+            return Log::setErrorMessage($exception->getMessage() . "|file: " . $exception->getFile()
+                . "| line:" . $exception->getLine());
         }
 
     }
 
     protected function createMigrationsTable()
     {
-        $this->pdo->exec("CREATE TABLE IF NOT EXISTS migrations (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            migrations VARCHAR(255), 
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )  ENGINE=INNODB;");
+        if (!Capsule::schema()->hasTable('migrations')) {
+            Capsule::schema()->create("migrations", function (Blueprint $table) {
+                $table->id();
+                $table->string("migrations");
+                $table->timestamp("created_at");
+            });
+        }
     }
 
     protected function getAppliedMigrations(): bool|array
     {
-        $statement = $this->prepare("SELECT migrations FROM migrations");
-        $statement->execute();
-
-        return $statement->fetchAll(\PDO::FETCH_COLUMN);
+        $result = Capsule::table("migrations")
+            ->select("migrations")->get()->toArray();
+        return array_map(function ($data) {
+            return $data->migrations;
+        }, $result);
     }
 
     protected function saveMigration($migrations)
     {
-        $statement = $this->prepare("INSERT INTO migrations (migrations) VALUES ( '{$migrations}' )");
-        $statement->execute();
-    }
-
-    public function prepare($sql): bool|\PDOStatement
-    {
-        return $this->pdo->prepare($sql);
+        Capsule::table("migrations")->insert([
+            "migrations" => $migrations,
+        ]);
     }
 }

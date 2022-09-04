@@ -1,7 +1,9 @@
 <?php
 
 use App\core\Application;
+use App\core\Auth;
 use App\core\validation\validation;
+use App\Models\User;
 use JetBrains\PhpStorm\NoReturn;
 use JetBrains\PhpStorm\Pure;
 
@@ -48,7 +50,7 @@ if (!function_exists("dd")) {
 if (!function_exists("redirect")) {
     function redirect($root)
     {
-        Application::$app->response->redirect($root);
+        return Application::$app->response->redirect($root);
     }
 }
 
@@ -80,12 +82,23 @@ if (!function_exists("getDirContent")) {
     function getDirContent($dir): array
     {
         $files = scandir($dir);
-        $results = [];
-        foreach ($files as $value) {
-            if ($value != "." && $value != "..") {
-                $results[] = $value;
-            }
-        }
-        return $results;
+        return array_diff($files, ["..", "."]);
+    }
+}
+
+
+if (!function_exists("back")) {
+    #[Pure]
+    function back()
+    {
+        return Application::$app->request->back();
+    }
+}
+
+if (!function_exists("user")) {
+    #[Pure]
+    function user(): ?User
+    {
+        return Auth::user();
     }
 }

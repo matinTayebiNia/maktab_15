@@ -13,16 +13,14 @@ class validation implements validationInterface
     const REGEX_VALIDATION = "regex";
     const EMAIL_VALIDATION = "email";
     const INTEGER_VALIDATION = "integer";
+    const UNIQUE_VALIDATION = "unique";
+    const IN_VALIDATION = "in";
 
 
     private array $rules;
     private array $messages = [];
     private array $errors = [];
 
-    public function __construct()
-    {
-
-    }
 
     public function setMessages(array $messages = [])
     {
@@ -57,7 +55,7 @@ class validation implements validationInterface
             foreach ($rule as $item) {
                 $ruleName = $item;
                 if (!is_string($item)) {
-                    $ruleName = $item[0];
+                    $ruleName = array_key_first($item);
                 }
                 $this->required($ruleName, $value, $attribute);
 
@@ -67,8 +65,25 @@ class validation implements validationInterface
 
                 $this->min($ruleName, $value, $item, $attribute);
 
+
                 if ($ruleName === self::MAX_VALIDATION && strlen($value) > $item["max"]) {
                     $this->addErrorForRule($attribute, self::MAX_VALIDATION, ["max" => $item["max"], "field" => $attribute]);
+                }
+                if ($ruleName === self::UNIQUE_VALIDATION) {
+
+                    $className = $item["unique"];
+                    $uniqueAtt = $item["attribute"] ?? $attribute;
+                    $record = $className::where($uniqueAtt, $value)->first();
+                    if (isset($item["id"])) {
+                        $record = $className::where($uniqueAtt, $value)->whereNot("id", $item["id"])->first();
+                    }
+                    if ($record) {
+                        $this->addErrorForRule($attribute, self::UNIQUE_VALIDATION, ["field" => $attribute]);
+                    }
+                }
+
+                if ($ruleName === self::IN_VALIDATION && !in_array($value, $item["in"])) {
+                    $this->addErrorForRule($attribute, self::IN_VALIDATION, ["field" => $attribute]);
                 }
             }
         }
@@ -89,7 +104,8 @@ class validation implements validationInterface
             $validate = $this->rules[$key];
             foreach ($validate as $item) {
                 if (!is_string($item)) {
-                    $item = $item[0];
+                    $item = array_key_first($item);
+
                 }
                 $att[] = $key . "." . $item;
                 $msg[] = $this->StaticMessages()["{attribute}." . $item];
@@ -110,6 +126,11 @@ class validation implements validationInterface
                 $this->messages[$key] = $item;
     }
 
+    public function addError(string $attribute, string $message)
+    {
+        $this->errors[$attribute][] = $message;
+    }
+
     private function addErrorForRule(string $attribute, string $rule, $params = [])
     {
         $message = $this->messages[$attribute . "." . $rule] ?? '';
@@ -124,10 +145,12 @@ class validation implements validationInterface
         return [
             "{attribute}." . self::REQUIRED_VALIDATION => 'This {field} field is required',
             "{attribute}." . self::EMAIL_VALIDATION => 'This field must be valid email address',
-            "{attribute}." . self::MIN_VALIDATION => 'Min length of this {field} must be {min}',
-            "{attribute}." . self::MAX_VALIDATION => 'Max length of this {field} must be {max}',
+            "{attribute}." . self::MIN_VALIDATION => 'Min length of  {field} must be {min}',
+            "{attribute}." . self::MAX_VALIDATION => 'Max length of  {field} must be {max}',
             "{attribute}." . self::REGEX_VALIDATION => 'This {field} is not valid',
-            "{attribute}." . self::INTEGER_VALIDATION => 'This {field} is not valid',
+            "{attribute}." . self::INTEGER_VALIDATION => 'This {field}  is not valid',
+            "{attribute}." . self::IN_VALIDATION => 'value of {field}  is not valid',
+            "{attribute}." . self::UNIQUE_VALIDATION => 'This  {field}  already taken',
         ];
     }
 
@@ -135,7 +158,6 @@ class validation implements validationInterface
     {
         return $this->errors[$attribute] ?? false;
     }
-
 
 
     public function getFirstError($attribute)

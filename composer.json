@@ -16,6 +16,7 @@
 
     "require": {
         "ext-pdo": "*",
-        "vlucas/phpdotenv": "^5.4"
+        "vlucas/phpdotenv": "^5.4",
+        "illuminate/database": "^9.27"
     }
 }

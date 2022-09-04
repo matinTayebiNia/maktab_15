@@ -11,8 +11,9 @@ class Response
 
     public function redirect(string $root)
     {
-        header("location: " . $root);
+        return header("location: " . $root);
     }
+
 
 
 }
