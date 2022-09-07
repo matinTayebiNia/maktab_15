@@ -32,20 +32,23 @@ class SiteController extends Controller
 
     public function doctors(Request $request)
     {
-        $search_data = null;
         $id = $request->getRouteParam("id");
         $lab = Lab::query();
-        $search_data = $lab->find($id);
+        $search_data = $lab->find($id)->doctors;
         if ($word = $request->input("search")) {
-            $search_data = $lab->whereHas("doctors", function ($query) use ($word) {
-                return $query->where("Expert", "LIKE", "%{$word}%")
-                    ->orWhereHas("user", function ($query) use ($word) {
-                        return $query->where("name", "LIKE", "%{$word}%")
-                            ->orWhere("lastname", "LIKE", "%{$word}%");
-                    });
-            })->latest()->get();
+            $search_data = $lab->find($id)->doctors()
+                ->where("Expert", "LIKE", "%{$word}%")->orWhereHas("user", function ($query) use ($word) {
+                    return $query->where("name", "LIKE", "%{$word}%")
+                        ->orWhere("lastname", "LIKE", "%{$word}%");
+                })
+                ->latest()->get();
+
         }
         //todo: implement show doctors
+        list($paginate, $data) = Lab::pagination(4, $search_data);
+
+        return $this->render("doctors", compact("paginate", "data"));
+
 
     }
 
