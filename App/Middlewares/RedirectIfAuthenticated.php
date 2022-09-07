@@ -2,6 +2,8 @@
 
 namespace App\Middlewares;
 
+use App\core\Application;
+use App\core\Auth;
 use App\core\Middleware\BaseMiddleware;
 use App\core\Request\Request;
 use App\core\Response;
@@ -18,8 +20,9 @@ class RedirectIfAuthenticated extends BaseMiddleware
 
     public function execute(Request $request, Response $response)
     {
-        if (!$request->user()) {
-            return true;
+        if (Auth::isGuest()) {
+//            if (empty($this->action) || in_array(Application::$app->controller->action, $this->action))
+                return true;
         }
         return $response->redirect(back());
 

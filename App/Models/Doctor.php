@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Doctor extends Eloquent
+use App\core\db\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class Doctor extends Model
 {
     protected $fillable = [
         "Evidence", "Expert", "user_id", "status"
@@ -16,5 +18,10 @@ class Doctor extends Eloquent
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function labs(): BelongsToMany
+    {
+        return $this->belongsToMany(Lab::class);
     }
 }

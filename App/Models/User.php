@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class User extends Eloquent
+use App\core\db\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use JetBrains\PhpStorm\Pure;
+
+class User extends Model
 {
     protected $fillable = [
         'name', 'lastname', 'password', 'National_Code', "type_user", "address"
@@ -38,5 +40,15 @@ class User extends Eloquent
     public function TypeUser()
     {
         return $this->type_user;
+    }
+
+    #[Pure]
+    public function getTypeUser(): string
+    {
+        return match ($this->TypeUser()) {
+            "doctor" => "پزشک",
+            "manager" => "ادمین",
+            "patient" => "بیمار"
+        };
     }
 }

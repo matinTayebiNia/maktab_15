@@ -1,3 +1,8 @@
+<?php
+
+use App\core\Auth;
+
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -28,12 +33,27 @@
             <a href="#" class="hover:underline hover:text-darkGrayishBlue">انجمن</a>
         </div>
         <!--        Button-->
-        <a href="/login"
-           class="p-3 hidden md:block
+        <?php if (Auth::isGuest()): ?>
+            <a href="/login"
+               class="p-3 hidden md:block
             px-6 text-lg text-white bg-blue-700 rounded baseline hover:bg-blue-600  ">
-            ورود
-        </a>
-
+                ورود
+            </a>
+        <?php else: ?>
+            <?php
+            $route = match (user()->TypeUser()) {
+                "doctor" => "/doctors/index",
+                "patient" => "/patient/index",
+                "manager" => "/admin/index",
+                default => false,
+            };
+            ?>
+            <a href="<?= $route ?>"
+               class="p-3 hidden md:block
+            px-6 text-lg text-white bg-blue-700 rounded baseline hover:bg-blue-600  ">
+                پنل کاربری
+            </a>
+        <?php endif; ?>
         <button class="block  hamburger md:hidden focus:outline-none" id="menu-btn">
             <span class="hamburger-top"></span>
             <span class="hamburger-middle"></span>

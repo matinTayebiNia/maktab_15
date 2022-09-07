@@ -105,13 +105,13 @@ class validation implements validationInterface
             foreach ($validate as $item) {
                 if (!is_string($item)) {
                     $item = array_key_first($item);
-
                 }
                 $att[] = $key . "." . $item;
                 $msg[] = $this->StaticMessages()["{attribute}." . $item];
             }
         }
         return array_combine($att, $msg);
+
     }
 
 

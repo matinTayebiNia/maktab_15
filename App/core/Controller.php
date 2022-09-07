@@ -11,33 +11,33 @@ abstract class Controller
     public string $action = "";
     public string $layout = "main";
 
-    public function render($view, $params = []): array|bool|string
+    protected function render($view, $params = []): array|bool|string
     {
         return Application::$app->view->renderView($view, $params);
     }
 
-    public function setLayout(string $layout)
+    protected function setLayout(string $layout)
     {
         $this->layout = $layout;
     }
 
-    public function setFlashMessages($key, $message)
+    protected function setFlashMessages($key, $message)
     {
          Application::$app->session->setFlash($key, $message);
     }
 
     #[Pure]
-    public function getBody(): array
+    protected function getBody(): array
     {
         return Application::$app->request->getBody();
     }
 
-    public function toJson($value): bool|string
+    protected function toJson($value): bool|string
     {
         return json_encode($value);
     }
 
-    public function redirect($root)
+    protected function redirect($root)
     {
          Application::$app->response->redirect($root);
     }
@@ -53,7 +53,7 @@ abstract class Controller
     /**
      * @param BaseMiddleware $middleware
      */
-    public function setMiddleware(BaseMiddleware $middleware): void
+    protected function setMiddleware(BaseMiddleware $middleware): void
     {
         $this->middleware[] = $middleware;
 

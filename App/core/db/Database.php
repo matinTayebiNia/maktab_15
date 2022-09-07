@@ -54,11 +54,14 @@ class Database
             $this->createMigrationsTable();
             $appliedMigrations = $this->getAppliedMigrations();
 
-            $files = getDirContent(Application::$rootDir . "/database/migrations");
+            $files = getDirContent(basePath("database/migrations"));
             $toApplyMigrations = array_diff($files, $appliedMigrations);
 
+            if (empty($toApplyMigrations))
+                return Log::setSuccessMessage("nothing to migrate!");
+
             foreach ($toApplyMigrations as $migration) {
-                require_once Application::$rootDir . "/database/migrations/" . $migration;
+                require_once basePath("database/migrations/" . $migration);
                 $className = pathinfo($migration, PATHINFO_FILENAME);
 
                 $instance = new $className;
@@ -67,8 +70,6 @@ class Database
                 $this->saveMigration($migration);
                 Log::setMessageWithTime("Applied migration $migration");
             }
-            if (empty($toApplyMigrations))
-                Log::setSuccessMessage("nothing to migrate!");
 
         } catch (\Exception $exception) {
             return Log::setErrorMessage($exception->getMessage() . "|file: " . $exception->getFile()

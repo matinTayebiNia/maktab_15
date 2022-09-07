@@ -11,7 +11,7 @@ class IsDoctor extends BaseMiddleware
 
     public function execute(Request $request, Response $response)
     {
-        if ($request->user()->type_user == "doctor") {
+        if ($request->user()->TypeUser() == "doctor") {
             return true;
         }
         return $response->redirect(back());

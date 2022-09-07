@@ -10,6 +10,7 @@ class m0006_create_room_table
     {
         Capsule::schema()->create('rooms', function (Blueprint $table) {
             $table->id();
+            $table->string("name");
             $table->string("room_type");
             $table->enum("status", ['unused', 'using', 'broke'])->default("unused");
             $table->unsignedBigInteger("lab_id");

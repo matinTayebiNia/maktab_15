@@ -6,39 +6,46 @@ namespace App\controller;
 use App\core\Controller;
 use App\core\Request\Request;
 use App\core\Response;
+use App\Models\Lab;
 
 class SiteController extends Controller
 {
 
     public function home(): array|bool|string
     {
-        $params = [
-            "name" => "matinTayebi"
-        ];
-        return $this->render("home", $params);
+        return $this->render("home");
     }
 
-    public function contact(Request $request)
+    public function laboratory(Request $request): string
     {
-        return $this->render("contact");
+        $search_data = null;
+        $lab = Lab::query();
+        if ($word = $request->input("search")) {
+            $search_data = $lab->where("labName", "LIKE", "%{$word}%")
+                ->latest()->get();
+        }
+
+        list($paginate, $data) = Lab::pagination(4, $search_data);
+
+        return $this->render("labs", compact("paginate", "data"));
     }
 
-    public function contactPost(Request $request, Response $response)
+    public function doctors(Request $request)
     {
-
-        $validation = $request->validation([
-            "email" => ["required", "email"],
-            "subject" => ["required", ["min", "min" => 2]],
-            "description" => ["required"]
-        ], [
-            "email.required" => "ایمیل الزامی می باشد",
-            "email.email" => "ایمیل معتبر نیست",
-            "description.required" => "توضیحات الزامی میباشد",
-        ]);
-
-
-
-        return $this->toJson($validation->subject);
+        $search_data = null;
+        $id = $request->getRouteParam("id");
+        $lab = Lab::query();
+        $search_data = $lab->find($id);
+        if ($word = $request->input("search")) {
+            $search_data = $lab->whereHas("doctors", function ($query) use ($word) {
+                return $query->where("Expert", "LIKE", "%{$word}%")
+                    ->orWhereHas("user", function ($query) use ($word) {
+                        return $query->where("name", "LIKE", "%{$word}%")
+                            ->orWhere("lastname", "LIKE", "%{$word}%");
+                    });
+            })->latest()->get();
+        }
+        //todo: implement show doctors
 
     }
 

@@ -27,9 +27,9 @@ use App\core\Application;
 
             <nav class="pt-6">
                 <div class=" ">
-                    <a href="/doctors/patients"
+                    <a href="/doctors/patients/index"
                        class="w-full p-4 my-2 text-gray-500 hover:text-blue-500  flex items-center justify-start
-                       <?= isActive("/doctors/patients") ?>">
+                       <?= isActive("/doctors/patients/index") ?>">
                             <span class="text-left">
                              <svg width="20" height="20" fill="currentColor" viewBox="0 0 2048 1792"
                                   xmlns="http://www.w3.org/2000/svg">
@@ -37,13 +37,13 @@ use App\core\Application;
                                     </path>
                                 </svg>
                             </span>
-                        <span class="mx-4 font-normal  <?= isActive("/admin/index", 'text-lg') ?> ">
+                        <span class="mx-4 font-normal  <?= isActive("/doctors/patients/index", 'text-lg') ?> ">
                                 بیماران
                             </span>
                     </a>
-                    <a href="/doctors/edit/<?= user()->id ?>"
+                    <a href="/doctors/edit"
                        class="w-full p-4 my-2 text-gray-500 hover:text-blue-500 flex items-center justify-start
-                         <?= isActive("/doctor/edit/" . user()->id) ?> ">
+                         <?= isActive("/doctor/edit/") ?> ">
                             <span class="text-left">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                      class="w-5 h-5">
@@ -52,8 +52,8 @@ use App\core\Application;
 
                             </span>
                         <span class="mx-4 font-normal
-                        <?= isActive("/doctors/edit/" . user()->id, 'text-lg') ?> ">
-                               ویرایش
+                        <?= isActive("/doctors/edit/", 'text-lg') ?> ">
+                           آزمایشگاه ها
                             </span>
                     </a>
                 </div>
@@ -97,14 +97,49 @@ use App\core\Application;
                         </div>
                     </div>
                     <div class="relative p-1 flex items-center justify-end w-1/4 ml-5 mr-4 sm:mr-0 sm:right-auto">
-                        <a href="#" class="block relative ">
-                            <img src="/images/avatar-anisha.png" alt="profile"
-                                 class="mx-auto object-cover rounded-full h-10 w-10">
+                        <a href="#" id="dropdownInformationButton" class="block relative ">
+                            <img src="/images/man.png" alt="profile"
+                                 class="mx-auto border-2 border-gray-500 object-cover rounded-full h-10 w-10">
                         </a>
                     </div>
                 </div>
             </div>
+            <div class=" flex justify-end ">
+                <div id="dropdownInformation"
+                     class="hidden z-10 w-32 bg-white rounded divide-y divide-gray-100 shadow ">
+                    <!--   <div class="py-3 px-4 text-sm text-gray-900">
+                           <div>Bonnie Green</div>
+                           <div class="font-medium truncate">name@flowbite.com</div>
+                       </div>
+                       <ul class="py-1 text-sm text-gray-700 " aria-labelledby="dropdownInformationButton">
+                           <li>
+                               <a href="#" class="block py-2 px-4 hover:bg-gray-100 ">Dashboard</a>
+                           </li>
+                           <li>
+                               <a href="#" class="block py-2 px-4 hover:bg-gray-100 ">Settings</a>
+                           </li>
+                           <li>
+                               <a href="#" class="block py-2 px-4 hover:bg-gray-100 ">Earnings</a>
+                           </li>
+                       </ul>
+                     -->
+                    <div class="py-1">
+                        <a href="/doctors/edit/" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">
+                            ویرایش اطلاعات
+                        </a>
+                    </div>
+                    <div class="py-1">
+                        <a href="#"
+                           onclick="event.preventDefault();document.getElementById('logout-form').submit();"
+                           class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">خروج</a>
+                    </div>
+
+                </div>
+            </div>
+
         </header>
+        <form action="/logout" method="post" id="logout-form"></form>
+
 
         <!--        main area -->
         <div class="overflow-auto h-screen pb-24 pt-2 pr-2 pl-2 md:pt-0 md:pr-0 md:pl-0">
@@ -115,10 +150,26 @@ use App\core\Application;
 </div>
 
 <script>
-    function closeAlert() {
-        const alert = document.getElementById("alert1");
+
+    const alert = document.getElementById("dropdownInformation");
+    const click = document.getElementById("dropdownInformationButton");
+    click.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        if (alert.classList.contains("hidden")) {
+            alert.classList.remove("hidden");
+        } else {
+            alert.classList.add("hidden");
+
+        }
+    })
+
+    // alert-danger
+    function closeAlert($element) {
+        const alert = document.getElementById($element);
         alert.classList.add("hidden");
     }
+
 </script>
 </body>
 </html>

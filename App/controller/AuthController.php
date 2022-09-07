@@ -99,4 +99,10 @@ class AuthController extends Controller
 
         return $this->redirect("/login");
     }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect("/");
+    }
 }

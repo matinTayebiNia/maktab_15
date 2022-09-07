@@ -8,12 +8,6 @@ use App\core\Response;
 
 class RedirectIfIsNotAuthenticated extends BaseMiddleware
 {
-    protected array $action = [];
-
-    public function __construct(array $action = [])
-    {
-        $this->action = $action;
-    }
 
     public function execute(Request $request, Response $response)
     {

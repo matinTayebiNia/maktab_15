@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use App\core\db\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Admin extends Eloquent
+class Admin extends Model
 {
     protected $fillable = [
         "user_id", "email", "status"
@@ -17,4 +17,6 @@ class Admin extends Eloquent
     {
         return $this->belongsTo(User::class);
     }
+
+
 }

@@ -11,9 +11,9 @@ class ApprovedDoc extends BaseMiddleware
 
     public function execute(Request $request, Response $response)
     {
-        if ($request->user()->doctor()->Expert != null
-            && $request->user()->doctor()->Evidence != null
-            && $request->user()->doctor()->status != false) {
+        if ($request->user()->doctor()->first()->Expert != null
+            && $request->user()->doctor()->first()->Evidence != null
+            && $request->user()->doctor()->first()->status != false) {
             return true;
         }
         return $response->redirect(back());

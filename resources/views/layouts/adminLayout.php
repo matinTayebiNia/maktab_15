@@ -50,8 +50,9 @@
                                 پزشکان
                             </span>
                     </a>
-                    <a href="#"
-                       class="w-full p-4 my-2 text-gray-500 hover:text-blue-500 flex items-center justify-start ">
+                    <a href="/admin/patients"
+                       class="w-full p-4 my-2 text-gray-500 hover:text-blue-500 flex items-center justify-start
+                            <?= isActive("/admin/patients") ?>">
                             <span class="text-left">
                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                   class="w-5 h-5">
@@ -60,21 +61,50 @@
 
 
                             </span>
-                        <span class="mx-4 font-normal ">
+                        <span class="mx-4 font-normal <?= isActive("/admin/patients", 'text-lg') ?> ">
                             بیماران
                             </span>
                     </a>
-                    <a href="#"
-                       class="w-full p-4 my-2 text-gray-500 hover:text-blue-500 flex items-center justify-start ">
+                    <a href="/admin/mangers"
+                       class="w-full p-4 my-2 text-gray-500 <?= isActive("/admin/mangers") ?>
+                        hover:text-blue-500 flex items-center justify-start ">
                             <span class="text-left">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                class="w-5 h-5">
                             <path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.78.78 0 01-.358-.442 3 3 0 014.308-3.516 6.484 6.484 0 00-1.905 3.959c-.023.222-.014.442.025.654a4.97 4.97 0 01-2.07-.655zM16.44 15.98a4.97 4.97 0 002.07-.654.78.78 0 00.357-.442 3 3 0 00-4.308-3.517 6.484 6.484 0 011.907 3.96 2.32 2.32 0 01-.026.654zM18 8a2 2 0 11-4 0 2 2 0 014 0zM5.304 16.19a.844.844 0 01-.277-.71 5 5 0 019.947 0 .843.843 0 01-.277.71A6.975 6.975 0 0110 18a6.974 6.974 0 01-4.696-1.81z"/>
                             </svg>
                             </span>
-                        <span class="mx-4 font-normal ">
+                        <span class="mx-4 font-normal <?= isActive("/admin/mangers", 'text-lg') ?> ">
                             مدیران
                             </span>
+                    </a>
+
+                    <a href="/admin/labs"
+                       class="w-full p-4 my-2 text-gray-500 <?= isActive("/admin/labs") ?>
+                        hover:text-blue-500 flex items-center justify-start ">
+                            <span class="text-left">
+                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                               xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            </span>
+                        <span class="mx-4 font-normal <?= isActive("/admin/labs", 'text-lg') ?> ">
+                            آزمایشگاه
+                            </span>
+                    </a>
+
+                    <a href="/admin/rooms"
+                       class="w-full p-4 my-2 text-gray-500 <?= isActive("/admin/rooms") ?>
+                        hover:text-blue-500 flex items-center justify-start ">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                            <path d="M19.006 3.705a.75.75 0 00-.512-1.41L6 6.838V3a.75.75 0 00-.75-.75h-1.5A.75.75 0 003 3v4.93l-1.006.365a.75.75 0 00.512 1.41l16.5-6z"/>
+                            <path fill-rule="evenodd"
+                                  d="M3.019 11.115L18 5.667V9.09l4.006 1.456a.75.75 0 11-.512 1.41l-.494-.18v8.475h.75a.75.75 0 010 1.5H2.25a.75.75 0 010-1.5H3v-9.129l.019-.006zM18 20.25v-9.565l1.5.545v9.02H18zm-9-6a.75.75 0 00-.75.75v4.5c0 .414.336.75.75.75h3a.75.75 0 00.75-.75V15a.75.75 0 00-.75-.75H9z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                        <span class="mx-4 font-normal <?= isActive("/admin/rooms", 'text-lg') ?> ">
+                          اتاق ها
+                                                    </span>
                     </a>
 
                 </div>
@@ -118,14 +148,47 @@
                         </div>
                     </div>
                     <div class="relative p-1 flex items-center justify-end w-1/4 ml-5 mr-4 sm:mr-0 sm:right-auto">
-                        <a href="#" class="block relative ">
-                            <img src="/images/avatar-anisha.png" alt="profile"
-                                 class="mx-auto object-cover rounded-full h-10 w-10">
+                        <a href="#" id="dropdownInformationButton" class="block relative ">
+                            <img src="/images/man.png" alt="profile"
+                                 class="mx-auto border-2 border-gray-500 object-cover rounded-full h-10 w-10">
                         </a>
                     </div>
                 </div>
             </div>
+            <div class=" flex justify-end ">
+                <div id="dropdownInformation"
+                     class="hidden z-10 w-32 bg-white rounded divide-y divide-gray-100 shadow ">
+                    <!--   <div class="py-3 px-4 text-sm text-gray-900">
+                           <div>Bonnie Green</div>
+                           <div class="font-medium truncate">name@flowbite.com</div>
+                       </div>
+                       <ul class="py-1 text-sm text-gray-700 " aria-labelledby="dropdownInformationButton">
+                           <li>
+                               <a href="#" class="block py-2 px-4 hover:bg-gray-100 ">Dashboard</a>
+                           </li>
+                           <li>
+                               <a href="#" class="block py-2 px-4 hover:bg-gray-100 ">Settings</a>
+                           </li>
+                           <li>
+                               <a href="#" class="block py-2 px-4 hover:bg-gray-100 ">Earnings</a>
+                           </li>
+                       </ul>
+                     -->
+                    <div class="py-1">
+                        <a href="/admin/edit/" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">
+                            ویرایش اطلاعات
+                        </a>
+                    </div>
+                    <div class="py-1">
+                        <a href="#"
+                           onclick="event.preventDefault();document.getElementById('logout-form').submit();"
+                           class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">خروج</a>
+                    </div>
+
+                </div>
+            </div>
         </header>
+        <form action="/logout" method="post" id="logout-form"></form>
 
         <!--        main area -->
         <div class="overflow-auto h-screen pb-24 pt-2 pr-2 pl-2 md:pt-0 md:pr-0 md:pl-0">
@@ -136,8 +199,21 @@
 </div>
 
 <script>
-    function closeAlert() {
-        const alert = document.getElementById("alert1");
+    const alert = document.getElementById("dropdownInformation");
+    const click = document.getElementById("dropdownInformationButton");
+    click.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        if (alert.classList.contains("hidden")) {
+            alert.classList.remove("hidden");
+        } else {
+            alert.classList.add("hidden");
+
+        }
+    })
+
+    function closeAlert(input) {
+        const alert = document.getElementById(input);
         alert.classList.add("hidden");
     }
 </script>

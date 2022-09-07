@@ -22,14 +22,10 @@ class Application
     public Session $session;
     public string $layout;
     public ?Controller $controller = null;
-    public ?User $user;
-    public string $userClass;
-    public static string $authenticateInput;
 
     public function __construct($rootPath, array $config)
     {
-        self::$authenticateInput = $config["AuthenticateInput"];
-        $this->userClass = $config["userClass"];
+
         self::$appName = $config["app_name"];
         $this->layout = $config["application_main_layout"];
         self::$rootDir = $rootPath;
@@ -41,13 +37,7 @@ class Application
         $this->validation = new validation();
         $this->database = Database::getInstance($config["db"]);
         $this->session = new Session($config["session_lifeTime"]);
-        $primaryValue = $this->session->get("user");
-        if ($primaryValue) {
-            $this->user = $this->userClass::find($primaryValue);
-        } else {
-            $this->logout();
-        }
-
+        Auth::getInstance($this->session, $config["AuthenticateInput"], $config["userClass"])->checkIsAuthenticated();
     }
 
     /**
@@ -56,23 +46,6 @@ class Application
     public function run()
     {
         echo $this->router->resolve();
-    }
-
-    #[Pure] public static function isGuest(): bool
-    {
-        return !self::$app->user;
-    }
-
-    public function login(User $user)
-    {
-        $this->user = $user;
-        $this->session->set("user", $this->user->id);
-    }
-
-    public function logout()
-    {
-        $this->user = null;
-        $this->session->remove("user");
     }
 
 }

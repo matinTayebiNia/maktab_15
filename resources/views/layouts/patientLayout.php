@@ -36,47 +36,6 @@
                                 داشبورد
                             </span>
                     </a>
-                    <a href="/admin/doctors"
-                       class="w-full p-4 my-2 text-gray-500 hover:text-blue-500 flex items-center justify-start
-                         <?= isActive("/admin/doctors") ?> ">
-                            <span class="text-left">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                     class="w-5 h-5">
-                                 <path d="M11 5a3 3 0 11-6 0 3 3 0 016 0zM2.615 16.428a1.224 1.224 0 01-.569-1.175 6.002 6.002 0 0111.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 018 18a9.953 9.953 0 01-5.385-1.572zM16.25 5.75a.75.75 0 00-1.5 0v2h-2a.75.75 0 000 1.5h2v2a.75.75 0 001.5 0v-2h2a.75.75 0 000-1.5h-2v-2z"/>
-                                </svg>
-
-                            </span>
-                        <span class="mx-4 font-normal  <?= isActive("/admin/doctors", 'text-lg') ?> ">
-                                پزشکان
-                            </span>
-                    </a>
-                    <a href="#"
-                       class="w-full p-4 my-2 text-gray-500 hover:text-blue-500 flex items-center justify-start ">
-                            <span class="text-left">
-                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                  class="w-5 h-5">
-                                <path d="M11 5a3 3 0 11-6 0 3 3 0 016 0zM2.046 15.253c-.058.468.172.92.57 1.175A9.953 9.953 0 008 18c1.982 0 3.83-.578 5.384-1.573.398-.254.628-.707.57-1.175a6.001 6.001 0 00-11.908 0zM12.75 7.75a.75.75 0 000 1.5h5.5a.75.75 0 000-1.5h-5.5z"/>
-                            </svg>
-
-
-                            </span>
-                        <span class="mx-4 font-normal ">
-                            بیماران
-                            </span>
-                    </a>
-                    <a href="#"
-                       class="w-full p-4 my-2 text-gray-500 hover:text-blue-500 flex items-center justify-start ">
-                            <span class="text-left">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                               class="w-5 h-5">
-                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.78.78 0 01-.358-.442 3 3 0 014.308-3.516 6.484 6.484 0 00-1.905 3.959c-.023.222-.014.442.025.654a4.97 4.97 0 01-2.07-.655zM16.44 15.98a4.97 4.97 0 002.07-.654.78.78 0 00.357-.442 3 3 0 00-4.308-3.517 6.484 6.484 0 011.907 3.96 2.32 2.32 0 01-.026.654zM18 8a2 2 0 11-4 0 2 2 0 014 0zM5.304 16.19a.844.844 0 01-.277-.71 5 5 0 019.947 0 .843.843 0 01-.277.71A6.975 6.975 0 0110 18a6.974 6.974 0 01-4.696-1.81z"/>
-                            </svg>
-                            </span>
-                        <span class="mx-4 font-normal ">
-                            مدیران
-                            </span>
-                    </a>
-
                 </div>
             </nav>
             <div class="absolute bottom-0  my-10 ">
@@ -118,14 +77,32 @@
                         </div>
                     </div>
                     <div class="relative p-1 flex items-center justify-end w-1/4 ml-5 mr-4 sm:mr-0 sm:right-auto">
-                        <a href="#" class="block relative ">
-                            <img src="/images/avatar-anisha.png" alt="profile"
+                        <a href="#" id="dropdownInformationButton" class="block relative ">
+                            <img src="/images/man.png" alt="profile"
                                  class="mx-auto object-cover rounded-full h-10 w-10">
                         </a>
                     </div>
                 </div>
             </div>
+            <div class=" flex justify-end ">
+                <div id="dropdownInformation"
+                     class="hidden z-10 w-32 bg-white rounded divide-y divide-gray-100 shadow ">
+                    <div class="py-1">
+                        <a href="/patient/edit" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">
+                            ویرایش اطلاعات
+                        </a>
+                    </div>
+                    <div class="py-1">
+                        <a href="#"
+                           onclick="event.preventDefault();document.getElementById('logout-form').submit();"
+                           class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">خروج</a>
+                    </div>
+
+                </div>
+            </div>
         </header>
+        <form action="/logout" method="post" id="logout-form"></form>
+
 
         <!--        main area -->
         <div class="overflow-auto h-screen pb-24 pt-2 pr-2 pl-2 md:pt-0 md:pr-0 md:pl-0">
@@ -136,8 +113,16 @@
 </div>
 
 <script>
-    function closeAlert() {
-        const alert = document.getElementById("alert1");
+
+    const alert = document.getElementById("dropdownInformation");
+    const click = document.getElementById("dropdownInformationButton");
+    click.addEventListener("click", function (e) {
+        e.preventDefault();
+        alert.classList.toggle("hidden")
+    })
+
+    function closeAlert($input) {
+        const alert = document.getElementById($input);
         alert.classList.add("hidden");
     }
 </script>

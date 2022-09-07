@@ -18,13 +18,12 @@ class Request implements RequestInterface
         return parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
     }
 
-    #[Pure]
     public function getMethod(): string
     {
         $request_method = $_SERVER['REQUEST_METHOD'];
 
         if ($request_method === 'POST' && isset($_POST['_method'])) {
-            return $_POST['_method'];
+            $request_method = $_SERVER["REQUEST_METHOD"] = htmlspecialchars($_POST['_method']);
         }
 
         return $request_method;
@@ -43,9 +42,17 @@ class Request implements RequestInterface
             foreach ($_GET as $key => $value) {
                 $body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
             }
-        } else if ($this->getMethod() === "POST") {
+        } else if ($this->getMethod() === "POST" ||
+            $this->getMethod() === "PUT" ||
+            $this->getMethod() === "DELETE") {
             foreach ($_POST as $key => $value) {
                 $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+                if (is_array($value)) {
+                    $body[$key] = array_map(function ($item) {
+                        return htmlspecialchars($item);
+                    }, $value);
+                }
+
             }
         }
         return $body;
@@ -103,7 +110,7 @@ class Request implements RequestInterface
     #[Pure]
     public function input($input): mixed
     {
-        return $this->getBody()[$input] ?? "";
+        return $this->getBody()[$input] ?? null;
     }
 
 
@@ -122,10 +129,11 @@ class Request implements RequestInterface
     /**
      * get routes params
      *
-     * @return array
+     * @param $param
+     * @return mixed
      */
-    public function getRouteParams(): array
+    public function getRouteParam($param): mixed
     {
-        return $this->routeParams;
+        return $this->routeParams[$param];
     }
 }

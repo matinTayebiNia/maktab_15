@@ -2,16 +2,34 @@
 
 use App\core\Application;
 use App\core\Auth;
+use App\core\Session;
 use App\core\validation\validation;
 use App\Models\User;
 use JetBrains\PhpStorm\NoReturn;
 use JetBrains\PhpStorm\Pure;
 
 if (!function_exists("basePath")) {
+
     function basePath($root): string
     {
         return Application::$rootDir . "/" . $root;
     }
+
+}
+if (!function_exists("session")){
+    function session(): Session
+    {
+        return Application::$app->session;
+    }
+}
+
+if (!function_exists("viewPath")) {
+
+    function viewPath($root): string
+    {
+        return Application::$rootDir . "/resources/views/" . $root . ".php";
+    }
+
 }
 
 if (!function_exists("errors")) {
@@ -102,3 +120,16 @@ if (!function_exists("user")) {
         return Auth::user();
     }
 }
+
+if (!function_exists("method")) {
+    function method($method): bool|string
+    {
+        $method = strtolower($method);
+        return match ($method) {
+            "put" => "<input type='hidden' name='_method' value='PUT'>",
+            "delete" => "<input type='hidden' name='_method' value='DELETE'>",
+            default => false,
+        };
+    }
+}
+

@@ -12,6 +12,7 @@ class m0005_create_Lab_table
         Capsule::schema()->create('lab', function (Blueprint $table) {
             $table->id();
             $table->string("labName");
+            $table->text("address");
             $table->timestamps();
         });
 

@@ -14,6 +14,7 @@ class m0004_create_admin_table
                 ->references("id")->on("users")->cascadeOnDelete();
             $table->string("email")->unique()->nullable();
             $table->boolean("status")->default(0);
+            $table->timestamps();
         });
     }
 
